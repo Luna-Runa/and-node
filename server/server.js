@@ -77,9 +77,9 @@ io.on("connection", (socket) => {
     let client = {};
     client.socketId = socket.id;
     client.id = id++;
-    if (data.soup) {
-      client.soup = data[0].soup;
-      client.topping = data[0].topping;
+    if (data.soup && data.topping) {
+      client.soup = data.soup;
+      client.topping = data.topping;
     }
 
     client.state = process.env.IMAGE_0;

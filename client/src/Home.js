@@ -13,7 +13,7 @@ const Home = () => {
   useEffect(() => {
     socketRef.current = io.connect("http://192.168.0.109:4000");
 
-    socketRef.current.emit("order", { 스프: "100%", topping });
+    socketRef.current.emit("order", { soup: "100%", topping });
     //서버에서 msg 로 연결되면 메시지 보내줌
     socketRef.current.on("getId", (msg) => {
       setId(msg.id);
