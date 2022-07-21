@@ -11,9 +11,9 @@ const Home = () => {
   const socketRef = useRef();
 
   useEffect(() => {
-    socketRef.current = io.connect("http://192.168.0.109:4000");
+    socketRef.current = io.connect("http://devluna.alphacircle.co.kr:5000");
 
-    socketRef.current.emit("order", { soup: "100%", topping });
+    socketRef.current.emit("order", [{ soup: "100", topping }]);
     //서버에서 msg 로 연결되면 메시지 보내줌
     socketRef.current.on("getId", (msg) => {
       setId(msg.id);
@@ -22,6 +22,9 @@ const Home = () => {
     });
 
     socketRef.current.on("getState", (msg) => {
+      console.log(msg);
+      setId(msg.id);
+      setTopping(msg.topping);
       setState(msg.state);
     });
 
