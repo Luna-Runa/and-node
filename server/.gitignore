@@ -6,6 +6,7 @@
 /old
 /src/cats
 /src/comments
+/public
 
 # Secret Key
 .env

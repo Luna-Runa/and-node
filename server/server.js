@@ -1,81 +1,55 @@
 import express from "express";
 import path from "path";
-import { Server } from "socket.io";
-import { createServer } from "http";
-//import multer from "multer";
-import fs from "fs";
 import cors from "cors";
 import dotenv from "dotenv";
+import { Server } from "socket.io";
+import { createServer } from "http";
+import rtsp from "node-rtsp-stream";
 
 dotenv.config();
-
 const app = express();
-
+const __dirname = path.resolve();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(cors({ origin: true, credentials: true }));
 
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: "*", credentials: true } });
 
-//out = multer({ dest: "uploads/" });
+const Stream = rtsp;
+const streamUrl =
+  "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov";
 
-const __dirname = path.resolve();
-
-let id = 1;
-let clients = [];
-
-app.get("/", (req, res) => {
-  res.send("hello?");
+const stream = new Stream({
+  name: "name",
+  streamUrl: streamUrl,
+  wsPort: 9999,
+  width: 240,
+  height: 160,
+  ffmpegOptions: {
+    // options ffmpeg flags
+    "-stats": "", // an option with no neccessary value uses a blank string
+    "-r": 30, // options with required values specify the value after the key
+  },
 });
 
-function cooking(socket, client) {
-  console.log(`cooking start : ${client.socketId}`);
-  client.state = process.env.IMAGE_0;
-  socket.emit("getState", client);
-
-  setTimeout(() => {
-    client.state = process.env.IMAGE_1;
-    socket.emit("getState", client);
-  }, 500);
-
-  setTimeout(() => {
-    client.state = process.env.IMAGE_2;
-    socket.emit("getState", client);
-  }, 1500);
-
-  setTimeout(() => {
-    client.state = process.env.IMAGE_3;
-    socket.emit("getState", client);
-  }, 2500);
-}
-
-io.on("connection", (socket) => {
-  socket.emit("hello", io.engine.clientsCount);
-
-  // on 함수로 이벤트를 정의해 신호를 수신할 수 있다.
-  socket.on("order", (data) => {
-    let client = {};
-    client.socketId = socket.id;
-    client.id = id++;
-    client.soup = data[0].soup;
-    client.topping = data[0].topping;
-
-    clients.push(client);
-    cooking(socket, client);
-
-    // io.emit : 연결된 모든 소켓에게
-    //io.emit("process", clients.state);
-    // io.sockets.socket(client.id).send() : client.id 에게만
+io.on("connection", function (socket) {
+  var pipeStream = function (data) {
+    socket.emit("data", data.toString("base64"));
+  };
+  stream.on("data", pipeStream);
+  socket.on("disconnect", function () {
+    stream.removeListener("data", pipeStream);
   });
+});
 
-  // let filename = "1.jpg";
-  // fs.readFile(filename, (err, data) => {
-  //   console.log(data);
-  //   socket.emit("hello", data);
-  // });
+app.get("/", (req, res) => {
+  res.send("hello????????????????????????????????");
+});
 
-  socket.on("disconnect", () => {});
+app.get("/rtsp", (req, res) => {
+  res.sendFile(path.join(__dirname + "/public/test_client.html"));
 });
 
 server.listen(process.env.PORT, () =>
