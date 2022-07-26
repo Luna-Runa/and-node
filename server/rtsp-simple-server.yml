@@ -250,7 +250,7 @@ paths:
     # * RTSP_PORT: server port
     # * G1, G2, ...: regular expression groups, if path name is
     #   a regular expression.
-    runOnDemand: ffmpeg -re -stream_loop -1 -i WinterSleep1080p.mp4 -c copy -f rtsp rtsp://localhost:8554/mystream
+    runOnDemand: ffmpeg -re -stream_loop -1 -i ./public/WS.mp4 -c copy -f rtsp rtsp://localhost:8554/mystream
     # Restart the command if it exits suddenly.
     runOnDemandRestart: yes
     # Readers will be put on hold until the runOnDemand command starts publishing
