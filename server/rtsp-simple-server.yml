@@ -65,7 +65,7 @@ rtspDisable: no
 # UDP-multicast allows to save bandwidth when clients are all in the same LAN.
 # TCP is the most versatile, and does support encryption.
 # The handshake is always performed with TCP.
-protocols: [udp, multicast, tcp]
+protocols: [tcp]
 # Encrypt handshake and TCP streams with TLS (RTSPS).
 # Available values are "no", "strict", "optional".
 encryption: "no"
@@ -176,7 +176,7 @@ paths:
 
     # If the source is an RTSP or RTSPS URL, this is the protocol that will be used to
     # pull the stream. available values are "automatic", "udp", "multicast", "tcp".
-    sourceProtocol: automatic
+    sourceProtocol: tcp
 
     # Tf the source is an RTSP or RTSPS URL, this allows to support sources that
     # don't provide server ports or use random server ports. This is a security issue
@@ -250,15 +250,15 @@ paths:
     # * RTSP_PORT: server port
     # * G1, G2, ...: regular expression groups, if path name is
     #   a regular expression.
-    runOnDemand: ffmpeg -re -stream_loop -1 -i ./public/WS.mp4 -c copy -f rtsp rtsp://localhost:8554/mystream
+    runOnDemand: ffmpeg -re -stream_loop -1 -i ./public/test5000.mp4 -c copy -f rtsp rtsp://211.32.50.72:8554/mystream
     # Restart the command if it exits suddenly.
     runOnDemandRestart: yes
     # Readers will be put on hold until the runOnDemand command starts publishing
     # or until this amount of time has passed.
-    runOnDemandStartTimeout: 5s
+    runOnDemandStartTimeout: 1s
     # The command will be closed when there are no
     # readers connected and this amount of time has passed.
-    runOnDemandCloseAfter: 5s
+    runOnDemandCloseAfter: 1s
 
     # Command to run when the stream is ready to be read, whether it is
     # published by a client or pulled from a server / camera.
